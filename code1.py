@@ -1,4 +1,3 @@
-import pandas as pd
 from sklearn.datasets import load_iris
 from matplotlib import pyplot as plt
 import seaborn as sns
@@ -15,6 +14,8 @@ from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.neural_network import MLPClassifier
 
 from sklearn.metrics import accuracy_score
+
+from sklearn import model_selection
 
 Iris = load_iris()
 
@@ -38,3 +39,19 @@ for name, model in models:
     model.fit(X_Data, Y_Data.values.ravel())
     Y_Pred = model.predict(X_Data)
     print(name, "'s Accuracy is ", accuracy_score(Y_Data, Y_Pred))
+
+results = []
+names = []
+
+for name, model in models:
+    kfold = model_selection.KFold(n_splits=5, random_state=7, shuffle=True)
+    cv_results = model_selection.cross_val_score(model, X_Data, Y_Data.values.ravel(), cv=kfold, scoring='accuracy')
+    results.append(cv_results)
+    names.append(name)
+fig = plt.figure()
+
+fig.suptitle("Classifier Comparison")
+ax = fig.add_subplot(111)
+plt.boxplot(results)
+ax.set_xticklabels(names)
+plt.show()
