@@ -14,6 +14,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.neural_network import MLPClassifier
 
+from sklearn.metrics import accuracy_score
+
 Iris = load_iris()
 
 Iris_Data = pd.DataFrame(data=np.c_[Iris['data'], Iris['target']], columns=Iris['feature_names'] + ['target'])
@@ -31,3 +33,8 @@ models.append(("KNN", KNeighborsClassifier()))
 models.append(("RF", RandomForestClassifier()))
 models.append(("GB", GradientBoostingClassifier()))
 models.append(("ANN", MLPClassifier()))
+
+for name, model in models:
+    model.fit(X_Data, Y_Data.values.ravel())
+    Y_Pred = model.predict(X_Data)
+    print(name, "'s Accuracy is ", accuracy_score(Y_Data, Y_Pred))
